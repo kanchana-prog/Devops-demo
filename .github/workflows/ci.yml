@@ -1,0 +1,32 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: "18"
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: app
+
+    - name: Run tests
+      run: npm test
+      working-directory: app
+
+    - name: Build Docker image
+      run: docker build -t devops-app .
+
+    - name: Run container
+      run: docker run -d -p 3000:3000 devops-app
